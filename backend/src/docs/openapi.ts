@@ -17,7 +17,13 @@ export const openApiSpec = {
       "require a JWT. Obtain one from signup or login, then press " +
       "**Authorize** and paste the token.",
   },
+  // Production first: the deployed /docs page is the common entry point, and
+  // Swagger preselects the first entry for "Try it out".
   servers: [
+    {
+      url: "https://mini-social-feed-production.up.railway.app",
+      description: "Production",
+    },
     { url: "http://localhost:4000", description: "Local development" },
   ],
   tags: [
