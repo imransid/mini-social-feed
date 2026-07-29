@@ -1,0 +1,14 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+# Prisma Client is generated code (see generator output in prisma/schema.prisma)
+/src/generated/prisma
+
+# Build output
+dist
+
+# Yarn local state (commit yarn.lock and .yarnrc.yml, not these)
+.yarn/*
+!.yarn/patches
+.pnp.*

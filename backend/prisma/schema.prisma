@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client"
+  // Must live under tsconfig's rootDir ("./src") so `tsc` can emit it into dist/.
+  output       = "../src/generated/prisma"
+  runtime      = "nodejs"
+  // This project is CommonJS (no "type": "module" in package.json).
+  moduleFormat = "cjs"
+}
+
+// In v7 the connection URL lives in prisma.config.ts, not here.
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  posts    Post[]
+  likes    Like[]
+  comments Comment[]
+  devices  Device[]
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  likes    Like[]
+  comments Comment[]
+
+  @@index([createdAt])
+  @@index([authorId])
+}
+
+model Like {
+  id     String @id @default(uuid())
+  postId String
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  postId    String
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+model Device {
+  id       String @id @default(uuid())
+  userId   String
+  fcmToken String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
