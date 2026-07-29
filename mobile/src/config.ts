@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import Constants from "expo-constants";
 
 /**
@@ -20,10 +21,22 @@ function inferDevHost(): string | null {
 }
 
 const API_PORT = 4000;
-const inferredHost = inferDevHost();
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+
+/**
+ * Inside the Android emulator the host machine is reachable at 10.0.2.2 —
+ * "localhost" there resolves to the emulator itself, so the API would be
+ * unreachable. A LAN address (a real device, or an emulator on a LAN-served
+ * bundle) is already correct and is left alone.
+ */
+function resolveHost(): string {
+  const inferred = inferDevHost();
+
+  if (Platform.OS === "android" && (!inferred || LOOPBACK_HOSTS.has(inferred))) {
+    return "10.0.2.2";
+  }
+  return inferred ?? "localhost";
+}
 
 export const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL ??
-  (inferredHost
-    ? `http://${inferredHost}:${API_PORT}`
-    : `http://localhost:${API_PORT}`);
+  process.env.EXPO_PUBLIC_API_URL ?? `http://${resolveHost()}:${API_PORT}`;

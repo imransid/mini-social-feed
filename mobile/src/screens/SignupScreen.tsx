@@ -20,6 +20,7 @@ export default function SignupScreen({ navigation }: Props) {
   const { signUp } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -58,14 +59,25 @@ export default function SignupScreen({ navigation }: Props) {
         onChangeText={setUsername}
         editable={!busy}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password (at least 6 characters)"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        editable={!busy}
-      />
+      <View style={styles.passwordRow}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Password (at least 6 characters)"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          editable={!busy}
+        />
+        <Pressable
+          style={styles.reveal}
+          onPress={() => setShowPassword((v) => !v)}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+        >
+          <Text style={styles.revealText}>{showPassword ? "Hide" : "Show"}</Text>
+        </Pressable>
+      </View>
 
       {username.length > 0 && !usernameOk ? (
         <Text style={styles.hint}>Username must be 3–30 characters.</Text>
@@ -109,6 +121,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 12,
   },
+  passwordRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#d0d0d0",
+    borderRadius: 10,
+    paddingRight: 8,
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  reveal: { paddingHorizontal: 10, paddingVertical: 8 },
+  revealText: { color: "#1d4ed8", fontWeight: "600" },
   button: {
     backgroundColor: "#1d4ed8",
     borderRadius: 10,

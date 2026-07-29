@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { api, ApiError } from "../api/client";
 import type { FeedPost } from "../api/types";
@@ -24,6 +25,9 @@ const PAGE_SIZE = 10;
 
 export default function FeedScreen({ navigation }: Props) {
   const { user, signOut } = useAuth();
+  // This screen renders with headerShown: false, so nothing else keeps the
+  // header clear of the status bar / notch.
+  const insets = useSafeAreaInsets();
 
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [pages, setPages] = useState(1);
@@ -146,7 +150,7 @@ export default function FeedScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <View>
           <Text style={styles.title}>Feed</Text>
           {user ? <Text style={styles.me}>@{user.username}</Text> : null}
