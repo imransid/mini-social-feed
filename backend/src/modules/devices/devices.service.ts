@@ -12,3 +12,21 @@ export async function registerDevice(userId: string, fcmToken: string) {
     create: { userId, fcmToken },
   });
 }
+
+/**
+ * The caller's registered devices. Tokens are truncated: enough to confirm a
+ * real FCM token was stored and to tell two devices apart, without handing the
+ * full token to anything that reads this.
+ */
+export async function listDevices(userId: string) {
+  const devices = await prisma.device.findMany({
+    where: { userId },
+    select: { id: true, fcmToken: true },
+  });
+
+  return devices.map((d) => ({
+    id: d.id,
+    tokenPreview: `${d.fcmToken.slice(0, 12)}…${d.fcmToken.slice(-6)}`,
+    tokenLength: d.fcmToken.length,
+  }));
+}

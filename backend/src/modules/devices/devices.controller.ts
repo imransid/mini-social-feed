@@ -8,6 +8,11 @@ export const registerDeviceSchema = z.object({
   fcmToken: z.string().min(1).max(4096),
 });
 
+export const list = asyncHandler(async (req: AuthedRequest, res: Response) => {
+  const devices = await service.listDevices(req.userId!);
+  res.json({ count: devices.length, devices });
+});
+
 export const register = asyncHandler(
   async (req: AuthedRequest, res: Response) => {
     const device = await service.registerDevice(
