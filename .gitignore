@@ -3,3 +3,9 @@ node_modules/
 dist/
 *.log
 .expo/
+
+.agents/
+.claude/
+.windsurf/
+AGENTS.md
+CLAUDE.md

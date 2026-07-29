@@ -8,6 +8,11 @@ node_modules
 # Build output
 dist
 
+# Firebase service-account credentials (see .env.example)
+/secrets
+*serviceAccount*.json
+firebase-adminsdk-*.json
+
 # Yarn local state (commit yarn.lock and .yarnrc.yml, not these)
 .yarn/*
 !.yarn/patches

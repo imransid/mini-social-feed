@@ -9,6 +9,15 @@ export const createCommentSchema = z.object({
   content: z.string().min(1).max(300),
 });
 
+export const list = asyncHandler(async (req: AuthedRequest, res: Response) => {
+  const postId = String(req.params.id);
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 20));
+
+  const result = await service.listComments({ postId, page, limit });
+  res.json(result);
+});
+
 export const create = asyncHandler(async (req: AuthedRequest, res: Response) => {
   const postId = String(req.params.id);
   const actorId = req.userId!;
