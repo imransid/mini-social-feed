@@ -88,6 +88,10 @@ rows they did not create. Suites run sequentially to avoid contention.
 
 Base URL `http://localhost:4000`. All request and response bodies are JSON.
 
+Interactive Swagger UI is served at **`GET /docs`** — every endpoint below is
+listed there and can be called from the browser; press **Authorize** and paste a
+JWT to try the protected ones.
+
 Authenticated endpoints require:
 
 ```
