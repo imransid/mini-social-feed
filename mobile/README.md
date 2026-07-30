@@ -5,32 +5,54 @@ React Native (Expo SDK 57) client for the [backend](../backend/README.md).
 ## Requirements
 
 - Node 20+
-- The backend running (`cd ../backend && yarn dev`)
-- Expo Go on a phone, or an iOS Simulator / Android Emulator
+- A development build or the release APK (see below). **Expo Go will not work**
+  for push — Expo Go dropped Android remote notifications in SDK 53.
+- An Android device or emulator (a Play Services image is required for FCM)
 
 ## Run
 
 ```bash
 npm install
-npx expo start
+npm start          # expo start --dev-client
 ```
 
-Scan the QR code with Expo Go, or press `i` / `a` for a simulator.
+`npm start` targets the development build rather than Expo Go. `npm run
+start:go` uses Expo Go if you only want to poke at the UI.
+
+To build:
+
+```bash
+npx expo run:android          # local debug build
+eas build -p android --profile preview   # installable APK
+```
 
 ## API base URL
 
-The app talks to the backend on **port 4000**. A phone cannot reach
-`localhost` — that resolves to the phone itself — so the host is derived at
-runtime from the Expo dev server's `hostUri`, which is already the LAN address
-your device connected to. No IP hardcoding, and it survives changing networks.
+The release APK talks to the deployed backend:
 
-To point at a deployed backend instead, set an env var before starting:
-
-```bash
-EXPO_PUBLIC_API_URL=https://api.example.com npx expo start
+```
+https://mini-social-feed-production.up.railway.app
 ```
 
-See `src/config.ts`.
+Resolution order in `src/config.ts`:
+
+1. `EXPO_PUBLIC_API_URL` — explicit override, wins everywhere
+2. Local dev server — **only while `__DEV__`**, deriving the LAN host from
+   Expo's `hostUri`, or `10.0.2.2` on the Android emulator
+3. The Railway URL — every release build
+
+`__DEV__` is `false` in any production bundle, so a shipped APK can never fall
+back to `localhost` or `10.0.2.2`, neither of which a real phone can reach. This
+is verified: the production bundle contains the Railway URL and **zero**
+occurrences of either local address.
+
+Because a development build has `__DEV__ === true`, it points at your local
+backend. To test a dev build against production — which is what you need for
+push, since push requires a dev build — start it with the override:
+
+```bash
+EXPO_PUBLIC_API_URL=https://mini-social-feed-production.up.railway.app npm start
+```
 
 ## Screens
 

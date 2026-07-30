@@ -9,3 +9,6 @@ dist/
 .windsurf/
 AGENTS.md
 CLAUDE.md
+
+# macOS
+.DS_Store

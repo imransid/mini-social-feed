@@ -302,6 +302,32 @@ duplicated.
 
 ---
 
+## `GET /devices`
+
+**Auth required.** Lists the caller's registered devices. Scoped to the
+authenticated user, so one account can never see another's devices, and tokens
+are truncated — the full FCM token is never returned. Useful for confirming a
+client actually registered for push.
+
+**200**
+
+```json
+{
+  "count": 1,
+  "devices": [
+    {
+      "id": "e103f275-b993-443c-ace6-99aca899d86f",
+      "tokenPreview": "cn10DFUtSHmA…jvx360",
+      "tokenLength": 163
+    }
+  ]
+}
+```
+
+`401` unauthorized
+
+---
+
 ## Push notifications
 
 When someone likes or comments on a post, every device registered to the

@@ -557,6 +557,52 @@ export const openApiSpec = {
           "401": { $ref: "#/components/responses/Unauthorized" },
         },
       },
+      get: {
+        tags: ["Devices"],
+        summary: "List the caller's registered devices",
+        description:
+          "Scoped to the authenticated user — a caller can never see another " +
+          "account's devices. Tokens are truncated to a preview, so the full " +
+          "FCM token is never returned.",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          "200": {
+            description: "The caller's devices.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    count: { type: "integer" },
+                    devices: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string", format: "uuid" },
+                          tokenPreview: { type: "string" },
+                          tokenLength: { type: "integer" },
+                        },
+                      },
+                    },
+                  },
+                },
+                example: {
+                  count: 1,
+                  devices: [
+                    {
+                      id: "e103f275-b993-443c-ace6-99aca899d86f",
+                      tokenPreview: "cn10DFUtSHmA…jvx360",
+                      tokenLength: 163,
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          "401": { $ref: "#/components/responses/Unauthorized" },
+        },
+      },
     },
   },
 };
